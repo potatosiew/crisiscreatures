@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order — Crisis Creatures</title>
+  <meta name="description" content="Complete your Crisis Creatures order. Escape-resistant cat harnesses, Singapore.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS ── */
+    :root{
+      --bg:#FBF7F0;--surface:#FFFFFF;--text:#1E1A16;--muted:rgba(30,26,22,0.52);
+      --border:#EAE2D6;--shadow-sm:0 2px 8px rgba(0,0,0,.05);--shadow-md:0 4px 24px rgba(0,0,0,.08);
+      --blue:#9BBECE;--blue-dark:#6A9EB5;--blue-bg:#EBF4F8;
+      --pink:#E8A8B4;--yellow:#EFE272;--green:#A8C4A0;--green-bg:#EEF5EC;
+      --radius:12px;--radius-lg:20px;
+      --form-bdr:#D8D0C6;--form-txt:#1E1A16;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font-family:inherit}
+
+    /* ── PAGE HEADER ── */
+    .order-nav{
+      position:sticky;top:0;z-index:50;background:rgba(251,247,240,.88);
+      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:16px 40px;gap:20px;
+    }
+    .order-nav-logo{font-weight:700;font-size:1rem;display:flex;align-items:center;gap:9px;color:var(--text)}
+    .order-nav-logo svg{color:var(--blue-dark)}
+    .back-link{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:500;color:var(--muted);letter-spacing:.04em;transition:color .15s}
+    .back-link:hover{color:var(--text)}
+    .back-link svg{flex-shrink:0}
+
+    /* ── LAYOUT ── */
+    .order-page{flex:1;max-width:680px;width:100%;margin:0 auto;padding:48px 24px 100px}
+    .order-title{font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-.03em;line-height:1;margin-bottom:8px}
+    .order-subtitle{font-size:.88rem;color:var(--muted);margin-bottom:40px}
+
+    /* ── PROGRESS ── */
+    .wizard-progress{display:flex;gap:0;margin-bottom:32px;border-radius:100px;background:var(--border);padding:4px}
+    .step-btn{flex:1;padding:9px 8px;background:none;border:none;cursor:pointer;border-radius:100px;font-family:inherit;font-size:.72rem;font-weight:500;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:7px;transition:background .2s,color .2s;white-space:nowrap}
+    .step-btn .step-num{width:20px;height:20px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;transition:background .2s,color .2s}
+    .step-btn.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
+    .step-btn.active .step-num{background:var(--text);color:var(--bg)}
+    .step-btn.done{color:var(--muted)}
+    .step-btn.done .step-num{background:var(--green);color:#fff}
+
+    /* ── WIZARD FORM ── */
+    .wizard-form{background:var(--surface);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);overflow:hidden}
+    .step-panel{display:none;padding:36px 36px 28px}
+    .step-panel.active{display:block}
+    .step-heading{font-size:1.05rem;font-weight:700;letter-spacing:.02em;margin-bottom:6px;color:var(--muted)}
+    .step-desc{font-size:.85rem;color:var(--muted);margin-bottom:26px;line-height:1.5}
+
+    /* ── FORM ELEMENTS ── */
+    .form-group{margin-bottom:20px}
+    .form-group label,.group-label{display:block;font-size:.8rem;font-weight:600;margin-bottom:7px;color:var(--form-txt)}
+    .form-group input[type="text"],.form-group input[type="email"],.form-group input[type="tel"],.form-group textarea,.form-group select{
+      width:100%;padding:11px 14px;border:1.5px solid var(--form-bdr);border-radius:var(--radius);
+      font-family:inherit;font-size:.88rem;color:var(--form-txt);background:var(--bg);
+      transition:border-color .2s,box-shadow .2s;appearance:none;-webkit-appearance:none
+    }
+    .form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--blue-dark);box-shadow:0 0 0 3px rgba(106,158,181,.15);background:#fff}
+    .form-group textarea{min-height:90px;resize:vertical;line-height:1.5}
+    .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .hint{font-size:.75rem;color:var(--muted);margin-top:5px;line-height:1.4}
+    .field-error,.group-error{display:none;align-items:center;gap:6px;font-size:.76rem;color:#c0392b;margin-top:6px}
+    .field-error svg,.group-error svg{flex-shrink:0;color:#c0392b}
+
+    /* ── RADIO OPTIONS ── */
+    .options-group{display:flex;flex-direction:column;gap:8px}
+    .option-label{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid var(--form-bdr);border-radius:var(--radius);cursor:pointer;font-size:.86rem;transition:border-color .18s,background .18s}
+    .option-label:has(input:checked){border-color:var(--blue-dark);background:var(--blue-bg)}
+    .option-label input[type="radio"]{accent-color:var(--blue-dark);width:16px;height:16px;flex-shrink:0}
+
+    /* ── DM BOX ── */
+    .dm-box{background:var(--bg);border:1.5px dashed var(--border);border-radius:var(--radius);padding:18px 20px;font-size:.82rem;color:var(--muted);text-align:center;line-height:1.6}
+
+    /* ── CART SUMMARY (Step 1) ── */
+    .cart-empty-order{text-align:center;padding:40px 16px}
+    .cart-empty-order p{color:var(--muted);font-size:.9rem;margin-bottom:18px;line-height:1.5}
+    .cart-empty-order a{display:inline-flex;align-items:center;gap:7px;font-size:.82rem;font-weight:600;color:var(--blue-dark);border:1.5px solid var(--blue);border-radius:100px;padding:9px 20px;transition:background .18s}
+    .cart-empty-order a:hover{background:var(--blue-bg)}
+    .cart-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+    .cart-item:last-child{border-bottom:none}
+    .cart-item-info{flex:1;min-width:0}
+    .cart-item-name{font-weight:600;font-size:.88rem;margin-bottom:2px}
+    .cart-item-sub{font-size:.76rem;color:var(--muted);margin-bottom:8px}
+    .cart-qty{display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:100px;width:fit-content}
+    .cart-qty button{width:30px;height:30px;border:none;background:none;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;color:var(--muted);border-radius:100px;transition:color .15s,background .15s;line-height:1}
+    .cart-qty button:hover{color:var(--text);background:var(--border)}
+    .cart-qty span{min-width:20px;text-align:center;font-size:.82rem;font-weight:600}
+    .cart-remove{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;display:flex;align-items:center;transition:color .18s}
+    .cart-remove:hover{color:#c0392b}
+    .cart-totals-block{border-top:1.5px solid var(--border);margin-top:8px;padding-top:14px}
+    .cart-total-row{display:flex;justify-content:space-between;font-size:.84rem;color:var(--muted);padding:4px 0}
+    .cart-total-row.grand{font-size:.97rem;font-weight:700;color:var(--text);padding-top:10px;border-top:1px solid var(--border);margin-top:6px}
+    .add-more-link{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:600;color:var(--blue-dark);margin-top:16px;border:1.5px solid var(--blue);border-radius:100px;padding:7px 16px;transition:background .18s}
+    .add-more-link:hover{background:var(--blue-bg)}
+
+    /* ── BUNGEE UPSELL PANEL ── */
+    .bungee-upsell{display:flex;align-items:center;gap:14px;background:var(--blue-bg);border:1.5px solid var(--blue);border-radius:var(--radius);padding:14px 16px;margin:4px 0}
+    .bungee-upsell-info{flex:1;min-width:0}
+    .bungee-upsell-info strong{display:block;font-size:.86rem;font-weight:600;margin-bottom:2px}
+    .bungee-upsell-info span{font-size:.75rem;color:var(--muted)}
+    .bungee-upsell-price{font-size:.84rem;font-weight:700;white-space:nowrap;margin-right:4px}
+    .bungee-add-btn{width:36px;height:36px;border-radius:50%;background:var(--text);color:var(--bg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .18s,box-shadow .18s;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+    .bungee-add-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.18)}
+
+    /* ── ORDER SUMMARY (Step 3) ── */
+    .order-summary{background:var(--bg);border-radius:var(--radius);border:1.5px solid var(--border);padding:20px;margin-bottom:24px}
+    .order-summary h4{font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+    .summary-row{display:flex;justify-content:space-between;font-size:.85rem;padding:7px 0;border-bottom:1px solid var(--border);color:var(--text)}
+    .summary-row:last-child{border-bottom:none}
+    .summary-row.delivery{color:var(--muted)}
+    .summary-row.total{font-weight:700;font-size:.95rem;padding-top:10px;border-top:1.5px solid var(--border)}
+
+    /* ── PAYMENT BOX ── */
+    .payment-box{background:var(--bg);border-radius:var(--radius);border:1.5px solid var(--border);padding:20px;margin-bottom:24px}
+    .payment-box h4{font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+    .steps-list{list-style:none;display:flex;flex-direction:column;gap:14px;counter-reset:steps}
+    .steps-list li{counter-increment:steps;display:flex;align-items:flex-start;gap:12px;font-size:.84rem;line-height:1.5}
+    .steps-list li::before{content:counter(steps);width:22px;height:22px;border-radius:50%;background:var(--text);color:var(--bg);font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+    /* ── SUCCESS BANNER ── */
+    .success-banner{display:none;background:var(--green-bg);border:1.5px solid var(--green);border-radius:var(--radius);padding:18px 20px;font-size:.86rem;color:#2d5a27;margin-bottom:24px;line-height:1.5}
+
+    /* ── WIZARD NAV ── */
+    .wizard-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 36px 28px;border-top:1.5px solid var(--border)}
+    .btn-prev,.btn-next{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:100px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:transform .18s,box-shadow .18s,background .18s}
+    .btn-prev{background:none;border:1.5px solid var(--border);color:var(--muted)}
+    .btn-prev:hover{background:var(--border);color:var(--text)}
+    .btn-next{background:var(--text);color:var(--bg);border:none;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+    .btn-next:hover{transform:translateY(-1px);box-shadow:0 5px 0 rgba(0,0,0,.18),0 8px 20px rgba(0,0,0,.1)}
+    .submit-btn{width:100%;padding:16px;background:var(--text);color:var(--bg);border:none;border-radius:100px;font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .18s,box-shadow .18s;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+    .submit-btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 rgba(0,0,0,.18)}
+    .submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:600px){
+      .order-nav{padding:14px 20px}
+      .order-page{padding:32px 16px 80px}
+      .step-panel{padding:28px 20px 20px}
+      .wizard-nav{padding:16px 20px 24px}
+      .form-row-2{grid-template-columns:1fr}
+      .step-btn .step-label{display:none}
+      .step-btn{padding:9px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="order-nav" aria-label="Order page navigation">
+  <a href="index-v3.html" class="order-nav-logo" aria-label="Back to Crisis Creatures shop">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="6.5" cy="5.5" rx="2" ry="2.5"/><ellipse cx="17.5" cy="5.5" rx="2" ry="2.5"/><ellipse cx="4" cy="11" rx="1.8" ry="2.2"/><ellipse cx="20" cy="11" rx="1.8" ry="2.2"/><path d="M12 22c-2.8 0-6.5-2.8-6.5-6.5 0-1.8.6-3 1.8-4 .8-.7 1.8-1.1 2.7-1.3.6-.1 1.2-.2 2-.2s1.4.1 2 .2c.9.2 1.9.6 2.7 1.3 1.2 1 1.8 2.2 1.8 4 0 3.7-3.7 6.5-6.5 6.5z"/></svg>
+    Crisis Creatures
+  </a>
+  <a href="index-v3.html" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back to Shop
+  </a>
+</nav>
+
+<main class="order-page">
+  <h1 class="order-title">Your Order</h1>
+  <p class="order-subtitle">Soft launch — handled personally. Complete payment after submitting.</p>
+
+  <div class="success-banner" id="successBanner" role="alert">
+    Order submitted! Don't forget to <strong>DM your payment screenshot + cat photo(s)</strong> to <strong>@crisiscreatures</strong> on Instagram to lock in your order.
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="wizard-progress" id="wizardProgress" role="tablist" aria-label="Order steps">
+    <button type="button" class="step-btn active" data-step="1" role="tab" aria-selected="true" onclick="goToStep(1)">
+      <span class="step-num" aria-hidden="true">1</span><span class="step-label">Your Order</span>
+    </button>
+    <button type="button" class="step-btn" data-step="2" role="tab" aria-selected="false" onclick="goToStep(2)">
+      <span class="step-num" aria-hidden="true">2</span><span class="step-label">Your Details</span>
+    </button>
+    <button type="button" class="step-btn" data-step="3" role="tab" aria-selected="false" onclick="goToStep(3)">
+      <span class="step-num" aria-hidden="true">3</span><span class="step-label">Payment</span>
+    </button>
+  </div>
+
+  <form class="wizard-form" id="orderForm" action="https://formspree.io/f/xbdqrodo" method="POST" novalidate>
+    <input type="hidden" name="_subject" value="New Crisis Creatures Order!">
+    <input type="hidden" name="cart_summary" id="cartSummaryField">
+    <input type="hidden" name="order_total" id="orderTotalField">
+
+    <!-- STEP 1: YOUR ORDER -->
+    <div class="step-panel active" id="step-1">
+      <div class="step-heading">01 — Your Order</div>
+      <p class="step-desc">Review your cart. Adjust quantities or remove items before continuing.</p>
+      <div id="cartContent" aria-live="polite"></div>
+      <div class="group-error" id="err-cart" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Your cart is empty — <a href="index-v3.html#products" style="color:inherit;text-decoration:underline">add products</a> before continuing.</div>
+    </div>
+
+    <!-- STEP 2: YOUR DETAILS -->
+    <div class="step-panel" id="step-2">
+      <div class="step-heading">02 — Your Details</div>
+      <p class="step-desc">Tell us about you and where to send your order.</p>
+
+      <div class="form-group">
+        <span class="group-label" id="ctype-lbl">Are you a new or existing customer? *</span>
+        <div class="options-group" role="radiogroup" aria-labelledby="ctype-lbl">
+          <label class="option-label"><input type="radio" name="customer_type" value="New customer" required> I'm a new customer</label>
+          <label class="option-label"><input type="radio" name="customer_type" value="Existing customer"> I'm an existing customer</label>
+        </div>
+        <div class="group-error" id="err-ctype" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Please select one option.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="cat_names">Name(s) of Your Escape Artist(s) *</label>
+        <textarea id="cat_names" name="cat_names" required aria-required="true" aria-describedby="err-catnames" placeholder="e.g. Toby — Bubbles (Adult), Luna — Blossom (Kitten)"></textarea>
+        <p class="hint">We'll handcraft custom packaging for each of them.</p>
+        <div class="field-error" id="err-catnames" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Please tell us your cat's name(s).</div>
+      </div>
+
+      <div class="form-group">
+        <label>Cat Photo(s)</label>
+        <div class="dm-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="1.8" stroke-linecap="round" style="margin:0 auto 7px;display:block" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <strong>DM us your cat's photo after ordering!</strong><br>
+          Send a clear, front-facing photo to <strong>@crisiscreatures</strong> on Instagram.<br>
+          <em>Natural lighting + plain background works best.</em>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="recipient_name">Recipient's Full Name *</label>
+        <input type="text" id="recipient_name" name="recipient_name" required placeholder="Full name as per mailing address" autocomplete="name" aria-required="true" aria-describedby="err-recipname">
+        <div class="field-error" id="err-recipname" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Please enter the recipient's full name.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input type="email" id="email" name="email" required placeholder="your@email.com" autocomplete="email" aria-required="true" aria-describedby="err-email">
+        <div class="field-error" id="err-email" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Please enter a valid email address.</div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="instagram">Instagram Handle *</label>
+          <input type="text" id="instagram" name="instagram" required placeholder="@yourhandle" aria-required="true" aria-describedby="err-ig">
+          <p class="hint">How we'll reach you for updates</p>
+          <div class="field-error" id="err-ig" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Please enter your Instagram handle.</div>
+        </div>
+        <div class="form-group">
+          <label for="mobile">Mobile Number *</label>
+          <input type="tel" id="mobile" name="mobile" required placeholder="e.g. 9123 4567" autocomplete="tel" aria-required="true" aria-describedby="err-mobile">
+          <p class="hint">For delivery updates only</p>
+          <div class="field-error" id="err-mobile" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Please enter your mobile number.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Full Mailing Address *</label>
+        <textarea id="address" name="address" required style="min-height:70px" placeholder="Street name, block number, building name..." autocomplete="street-address" aria-required="true" aria-describedby="err-address"></textarea>
+        <div class="field-error" id="err-address" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Please enter your mailing address.</div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="unit">Unit Number</label>
+          <input type="text" id="unit" name="unit" placeholder="#01-23 (leave blank if N/A)" autocomplete="address-line2">
+        </div>
+        <div class="form-group">
+          <label for="postal">Postal Code *</label>
+          <input type="text" id="postal" name="postal" required placeholder="6-digit postal code" maxlength="6" pattern="\d{6}" inputmode="numeric" aria-required="true" aria-describedby="err-postal">
+          <div class="field-error" id="err-postal" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Please enter a valid 6-digit postal code.</div>
+        </div>
+      </div>
+      <p style="font-size:.78rem;color:#AAA;margin-top:-8px">All local orders ship via tracked delivery — flat fee of <strong style="color:var(--form-txt)">$3.50</strong> added to your total.</p>
+    </div>
+
+    <!-- STEP 3: PAYMENT -->
+    <div class="step-panel" id="step-3">
+      <div class="step-heading">03 — Payment</div>
+      <p class="step-desc">Almost there! Review your order, scan the QR to pay, then submit.</p>
+
+      <div class="order-summary" aria-live="polite">
+        <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Order Summary</h4>
+        <div id="summaryContent"></div>
+      </div>
+
+      <div class="payment-box">
+        <h4>How to complete your order</h4>
+        <ol class="steps-list">
+          <li>Submit this form — your order total is shown in the summary above.</li>
+          <li>
+            <div style="flex:1">Scan this QR code and complete your payment
+              <div style="margin-top:10px">
+                <img src="images/QR code.png" alt="PayLah QR code for Crisis Creatures" style="height:148px;border-radius:10px;border:1.5px solid var(--border)" loading="lazy" onerror="this.style.display='none'">
+              </div>
+            </div>
+          </li>
+          <li><div style="flex:1">DM your <strong>payment screenshot</strong> + <strong>cat photo(s)</strong> to <strong>@crisiscreatures</strong> on Instagram — this is how we confirm and start crafting!</div></li>
+        </ol>
+      </div>
+
+      <div class="form-group">
+        <label class="option-label" style="align-items:flex-start">
+          <input type="checkbox" name="payment_acknowledgment" value="Acknowledged" required id="ack-check" style="margin-top:3px;width:auto;flex-shrink:0" aria-required="true" aria-describedby="err-ack">
+          <span>I understand I need to PayNow / PayLah! and DM my payment screenshot to @crisiscreatures to secure my order.</span>
+        </label>
+        <div class="field-error" id="err-ack" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Please acknowledge the payment steps before submitting.</div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        Submit My Order
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <!-- WIZARD NAV -->
+    <div class="wizard-nav" id="wizardNav">
+      <button type="button" class="btn-prev" id="prevBtn" style="display:none" onclick="changeStep(-1)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back
+      </button>
+      <button type="button" class="btn-next" id="nextBtn" onclick="changeStep(1)">
+        Continue
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </form>
+</main>
+
+<script>
+const DEL=3.50;
+let cart=[];
+
+/* ── LOAD CART FROM LOCALSTORAGE ── */
+try{const saved=localStorage.getItem('cc_cart');if(saved)cart=JSON.parse(saved)}catch(e){}
+
+function saveCart(){try{localStorage.setItem('cc_cart',JSON.stringify(cart))}catch(e){}}
+function fmt(n){return'$'+n.toFixed(2)}
+function cartSubtotal(){return cart.reduce((s,i)=>s+i.price*i.qty,0)}
+function cartCount(){return cart.reduce((s,i)=>s+i.qty,0)}
+function cartGrand(){return cart.length?cartSubtotal()+DEL:0}
+
+/* ── CART INTERACTIONS ── */
+function removeFromCart(idx){cart.splice(idx,1);saveCart();renderCartStep();}
+function changeQty(idx,delta){
+  cart[idx].qty+=delta;
+  if(cart[idx].qty<1)cart.splice(idx,1);
+  saveCart();renderCartStep();
+}
+
+/* ── ADD TO CART (for upsell) ── */
+function addToCart(item){
+  const existing=cart.find(c=>c.id===item.id);
+  if(existing){existing.qty++}
+  else{cart.push({...item,qty:1})}
+  saveCart();renderCartStep();
+}
+
+/* ── RENDER STEP 1 CART ── */
+function renderCartStep(){
+  const el=document.getElementById('cartContent');
+  const summaryField=document.getElementById('cartSummaryField');
+  const totalField=document.getElementById('orderTotalField');
+  if(cart.length===0){
+    el.innerHTML=`<div class="cart-empty-order">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 12px;display:block;opacity:.3" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <p>Your cart is empty.<br>Head back to the shop to add products.</p>
+      <a href="index-v3.html#products">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to Shop
+      </a>
+    </div>`;
+    summaryField.value='';totalField.value='';
+    renderOrderSummary();
+    return;
+  }
+  let h='<div>';
+  cart.forEach((item,i)=>{
+    const sub=item.size?`${item.colorway||''} · ${item.size}`:(item.colorway||'Add-on');
+    h+=`<div class="cart-item">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-sub">${sub}</div>
+        <div class="cart-qty">
+          <button type="button" onclick="changeQty(${i},-1)" aria-label="Decrease quantity">−</button>
+          <span>${item.qty}</span>
+          <button type="button" onclick="changeQty(${i},1)" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+        <button type="button" class="cart-remove" onclick="removeFromCart(${i})" aria-label="Remove ${item.name}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <span style="font-size:.85rem;font-weight:600">${fmt(item.price*item.qty)}</span>
+      </div>
+    </div>`;
+  });
+
+  /* Bungee upsell — show if cart has a harness but no bungee */
+  const hasHarness=cart.some(c=>c.colorway==='Bubbles'||c.colorway==='Blossom');
+  const hasBungee=cart.some(c=>c.id==='bungee');
+  if(hasHarness&&!hasBungee){
+    h+=`<div class="bungee-upsell">
+      <div class="bungee-upsell-info">
+        <strong>Add a Bungee Leash?</strong>
+        <span>Shock-absorbing · protects your cat's neck · $13.40 (U.P. $14.90)</span>
+      </div>
+      <span class="bungee-upsell-price">$13.40</span>
+      <button type="button" class="bungee-add-btn" onclick="addToCart({id:'bungee',name:'Bungee Leash',price:13.40})" aria-label="Add Bungee Leash to cart">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>`;
+  }
+
+  h+=`<div class="cart-totals-block">
+    <div class="cart-total-row"><span>Subtotal</span><span>${fmt(cartSubtotal())}</span></div>
+    <div class="cart-total-row"><span>Delivery</span><span>${fmt(DEL)}</span></div>
+    <div class="cart-total-row grand"><span>Total</span><span>${fmt(cartGrand())}</span></div>
+  </div>`;
+  h+=`<a href="index-v3.html#products" class="add-more-link">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Add more items
+  </a>`;
+  h+='</div>';
+  el.innerHTML=h;
+  const lines=cart.map(item=>`${item.name}${item.size?' ('+item.colorway+', '+item.size+')':''} x${item.qty} = ${fmt(item.price*item.qty)}`);
+  summaryField.value=lines.join('; ')+` | Delivery: ${fmt(DEL)} | Total: ${fmt(cartGrand())}`;
+  totalField.value=fmt(cartGrand());
+  renderOrderSummary();
+}
+
+/* ── RENDER STEP 3 ORDER SUMMARY ── */
+function renderOrderSummary(){
+  const el=document.getElementById('summaryContent');
+  if(!el)return;
+  if(cart.length===0){el.innerHTML='<p style="font-size:.82rem;color:var(--muted);padding:8px 0">No items in cart.</p>';return}
+  let h='';
+  cart.forEach(item=>{
+    const label=item.size?`${item.name} (${item.colorway}, ${item.size}) × ${item.qty}`:`${item.name} × ${item.qty}`;
+    h+=`<div class="summary-row"><span>${label}</span><span>${fmt(item.price*item.qty)}</span></div>`;
+  });
+  h+=`<div class="summary-row delivery"><span>Delivery (flat fee)</span><span>${fmt(DEL)}</span></div>`;
+  h+=`<div class="summary-row total"><span>Total</span><span>${fmt(cartGrand())}</span></div>`;
+  el.innerHTML=h;
+}
+
+/* ── VALIDATION ── */
+function showErr(id,show){const e=document.getElementById(id);if(e)e.style.display=show?'flex':'none'}
+function setInvalid(id,v){const e=document.getElementById(id);if(e){if(v)e.setAttribute('aria-invalid','true');else e.removeAttribute('aria-invalid')}}
+function clearErrors(){document.querySelectorAll('.field-error,.group-error').forEach(e=>e.style.display='none');document.querySelectorAll('[aria-invalid]').forEach(e=>e.removeAttribute('aria-invalid'))}
+
+/* ── WIZARD ── */
+let cur=1;const TOTAL=3;
+function changeStep(dir){if(dir===1&&!validateStep(cur))return;const n=cur+dir;if(n<1||n>TOTAL)return;goToStep(n)}
+function goToStep(n){
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(`step-${n}`).classList.add('active');
+  document.querySelectorAll('.step-btn').forEach(b=>{const s=+b.dataset.step;b.classList.remove('active','done');b.setAttribute('aria-selected',s===n?'true':'false');if(s===n)b.classList.add('active');else if(s<n)b.classList.add('done')});
+  const prev=document.getElementById('prevBtn'),next=document.getElementById('nextBtn');
+  prev.style.display=n>1?'inline-flex':'none';
+  if(n===TOTAL){next.style.display='none'}else{next.style.display='inline-flex';const lbl=n===TOTAL-1?'Review & Pay':'Continue';next.innerHTML=`${lbl} <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`}
+  if(n===3)renderOrderSummary();
+  cur=n;clearErrors();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function validateStep(step){
+  clearErrors();let ok=true,first=null;
+  if(step===1){
+    if(cart.length===0){showErr('err-cart',true);ok=false}
+  }
+  if(step===2){
+    const ct=document.querySelector('input[name="customer_type"]:checked');
+    if(!ct){showErr('err-ctype',true);ok=false;first=first||document.querySelector('input[name="customer_type"]')}
+    [{id:'cat_names',err:'err-catnames',t:v=>v.length>0},
+     {id:'recipient_name',err:'err-recipname',t:v=>v.length>0},
+     {id:'email',err:'err-email',t:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)},
+     {id:'instagram',err:'err-ig',t:v=>v.length>0},
+     {id:'mobile',err:'err-mobile',t:v=>v.length>0},
+     {id:'address',err:'err-address',t:v=>v.length>0},
+     {id:'postal',err:'err-postal',t:v=>/^\d{6}$/.test(v)}
+    ].forEach(({id,err,t})=>{const el=document.getElementById(id);if(!t(el.value.trim())){showErr(err,true);setInvalid(id,true);ok=false;first=first||el}});
+  }
+  if(!ok&&first)first.focus();
+  return ok;
+}
+
+/* ── SUBMIT ── */
+document.getElementById('orderForm').addEventListener('submit',async function(e){
+  e.preventDefault();clearErrors();
+  const ack=document.querySelector('input[name="payment_acknowledgment"]:checked');
+  if(!ack){showErr('err-ack',true);document.getElementById('ack-check').focus();return}
+  const btn=document.getElementById('submitBtn');
+  btn.textContent='Submitting…';btn.disabled=true;
+  try{
+    const r=await fetch(this.action,{method:'POST',body:new FormData(this),headers:{'Accept':'application/json'}});
+    if(r.ok){
+      document.getElementById('successBanner').style.display='block';
+      this.reset();cart=[];saveCart();renderCartStep();
+      goToStep(1);btn.textContent='Order Submitted';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }else throw new Error();
+  }catch{
+    btn.textContent='Submit My Order';btn.disabled=false;
+    const div=document.createElement('div');div.className='field-error';div.style.display='flex';div.style.marginTop='12px';div.setAttribute('role','alert');
+    div.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Something went wrong — please try again or DM us @crisiscreatures.';
+    btn.insertAdjacentElement('afterend',div);setTimeout(()=>div.remove(),8000);
+  }
+});
+
+/* ── INIT ── */
+renderCartStep();
+</script>
+</body>
+</html>
