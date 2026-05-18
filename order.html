@@ -132,6 +132,33 @@
     /* ── SUCCESS BANNER ── */
     .success-banner{display:none;background:var(--green-bg);border:1.5px solid var(--green);border-radius:var(--radius);padding:18px 20px;font-size:.86rem;color:#2d5a27;margin-bottom:24px;line-height:1.5}
 
+    /* ── RECEIPT ── */
+    .receipt-section{display:none;margin-top:24px}
+    .receipt-screenshot-notice{background:#FFFBEA;border:2px dashed #C8BB2D;border-radius:var(--radius);padding:14px 20px;text-align:center;font-size:.86rem;font-weight:700;color:#7A6800;margin-bottom:20px;letter-spacing:.02em}
+    .receipt-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+    .receipt-top{background:var(--text);color:var(--bg);padding:28px 32px;text-align:center}
+    .receipt-brand{font-weight:700;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;opacity:.55;margin-bottom:10px}
+    .receipt-confirm-title{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:18px}
+    .receipt-id{display:inline-block;font-family:monospace;font-size:1.05rem;font-weight:700;letter-spacing:.14em;background:rgba(255,255,255,.14);border-radius:8px;padding:8px 20px;margin-bottom:8px}
+    .receipt-ts{font-size:.73rem;opacity:.45;margin-top:4px}
+    .receipt-body-inner{padding:24px 28px}
+    .receipt-section-lbl{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+    .receipt-table{width:100%;border-collapse:collapse;margin-bottom:0;font-size:.83rem}
+    .receipt-table th{text-align:left;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 0 8px;border-bottom:1.5px solid var(--border)}
+    .receipt-table td{padding:10px 0;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+    .receipt-table tr:last-child td{border-bottom:none}
+    .receipt-table td:nth-child(2){text-align:center}
+    .receipt-table td:last-child{text-align:right;font-weight:600}
+    .receipt-totals{border-top:1.5px solid var(--border);padding-top:12px;font-size:.83rem;margin-top:4px}
+    .receipt-total-row{display:flex;justify-content:space-between;color:var(--muted);padding:4px 0}
+    .receipt-total-row.grand{font-size:.97rem;font-weight:700;color:var(--text);padding-top:10px;border-top:1.5px solid var(--border);margin-top:6px}
+    .receipt-details{border-top:1.5px solid var(--border);margin-top:20px;padding-top:16px}
+    .receipt-detail-row{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.83rem}
+    .receipt-detail-row:last-child{border-bottom:none}
+    .receipt-detail-lbl{min-width:108px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);flex-shrink:0;padding-top:2px}
+    .receipt-detail-val{color:var(--text);line-height:1.5;word-break:break-word}
+    @media(max-width:600px){.receipt-top{padding:22px 20px}.receipt-body-inner{padding:20px 20px}}
+
     /* ── WIZARD NAV ── */
     .wizard-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 36px 28px;border-top:1.5px solid var(--border)}
     .btn-prev,.btn-next{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:100px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:transform .18s,box-shadow .18s,background .18s}
@@ -159,11 +186,11 @@
 
 <!-- NAV -->
 <nav class="order-nav" aria-label="Order page navigation">
-  <a href="index.html" class="order-nav-logo" aria-label="Back to Crisis Creatures shop">
+  <a href="index-v3.html" class="order-nav-logo" aria-label="Back to Crisis Creatures shop">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="6.5" cy="5.5" rx="2" ry="2.5"/><ellipse cx="17.5" cy="5.5" rx="2" ry="2.5"/><ellipse cx="4" cy="11" rx="1.8" ry="2.2"/><ellipse cx="20" cy="11" rx="1.8" ry="2.2"/><path d="M12 22c-2.8 0-6.5-2.8-6.5-6.5 0-1.8.6-3 1.8-4 .8-.7 1.8-1.1 2.7-1.3.6-.1 1.2-.2 2-.2s1.4.1 2 .2c.9.2 1.9.6 2.7 1.3 1.2 1 1.8 2.2 1.8 4 0 3.7-3.7 6.5-6.5 6.5z"/></svg>
     Crisis Creatures
   </a>
-  <a href="index.html" class="back-link">
+  <a href="index-v3.html" class="back-link">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
     Back to Shop
   </a>
@@ -174,7 +201,7 @@
   <p class="order-subtitle">Soft launch — handled personally. Complete payment after submitting.</p>
 
   <div class="success-banner" id="successBanner" role="alert">
-    Order submitted! Don't forget to <strong>DM your payment screenshot + cat photo(s)</strong> to <strong>@crisiscreatures</strong> on Instagram to lock in your order.
+    Order submitted! <a href="#receipt" style="color:inherit;font-weight:700;text-decoration:underline">View your receipt below ↓</a> — don't forget to <strong>DM your payment screenshot + cat photo(s)</strong> to <strong>@crisiscreatures</strong> on Instagram to lock in your order.
   </div>
 
   <!-- PROGRESS -->
@@ -192,6 +219,7 @@
 
   <form class="wizard-form" id="orderForm" action="https://formspree.io/f/xbdqrodo" method="POST" novalidate>
     <input type="hidden" name="_subject" value="New Crisis Creatures Order!">
+    <input type="hidden" name="order_id" id="orderIdField">
     <input type="hidden" name="cart_summary" id="cartSummaryField">
     <input type="hidden" name="order_total" id="orderTotalField">
 
@@ -200,7 +228,7 @@
       <div class="step-heading">01 — Your Order</div>
       <p class="step-desc">Review your cart. Adjust quantities or remove items before continuing.</p>
       <div id="cartContent" aria-live="polite"></div>
-      <div class="group-error" id="err-cart" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Your cart is empty — <a href="index.html#products" style="color:inherit;text-decoration:underline">add products</a> before continuing.</div>
+      <div class="group-error" id="err-cart" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Your cart is empty — <a href="index-v3.html#products" style="color:inherit;text-decoration:underline">add products</a> before continuing.</div>
     </div>
 
     <!-- STEP 2: YOUR DETAILS -->
@@ -332,6 +360,36 @@
       </button>
     </div>
   </form>
+
+  <!-- RECEIPT / CONFIRMATION -->
+  <div class="receipt-section" id="receiptSection" role="region" aria-label="Order receipt">
+    <div id="receipt"></div>
+    <div class="receipt-screenshot-notice">
+      📸 Screenshot this page — it's your proof of order!
+    </div>
+    <div class="receipt-card">
+      <div class="receipt-top">
+        <div class="receipt-brand">Crisis Creatures</div>
+        <div class="receipt-confirm-title">Order Confirmed</div>
+        <div class="receipt-id" id="receiptOrderId"></div>
+        <div class="receipt-ts" id="receiptDate"></div>
+      </div>
+      <div class="receipt-body-inner">
+        <p class="receipt-section-lbl">Items</p>
+        <table class="receipt-table">
+          <thead><tr><th>Item</th><th style="text-align:center">Qty</th><th style="text-align:right">Price</th></tr></thead>
+          <tbody id="receiptItems"></tbody>
+        </table>
+        <div class="receipt-totals">
+          <div class="receipt-total-row"><span>Subtotal</span><span id="receiptSubtotal"></span></div>
+          <div class="receipt-total-row"><span>Delivery</span><span id="receiptDelivery"></span></div>
+          <div class="receipt-total-row grand"><span>Total</span><span id="receiptTotal"></span></div>
+        </div>
+        <div class="receipt-details" id="receiptDetails"></div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -346,6 +404,41 @@ function fmt(n){return'$'+n.toFixed(2)}
 function cartSubtotal(){return cart.reduce((s,i)=>s+i.price*i.qty,0)}
 function cartCount(){return cart.reduce((s,i)=>s+i.qty,0)}
 function cartGrand(){return cart.length?cartSubtotal()+DEL:0}
+
+/* ── ORDER ID ── */
+function generateOrderId(){
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let id='CC-';
+  for(let i=0;i<8;i++)id+=c[Math.floor(Math.random()*c.length)];
+  return id;
+}
+const currentOrderId=generateOrderId();
+
+/* ── FORM PERSISTENCE ── */
+function saveFormToSession(){
+  try{
+    const d={};
+    const ct=document.querySelector('input[name="customer_type"]:checked');
+    if(ct)d.customer_type=ct.value;
+    ['cat_names','recipient_name','email','instagram','mobile','address','unit','postal']
+      .forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value});
+    sessionStorage.setItem('cc_order_form',JSON.stringify(d));
+  }catch(e){}
+}
+function restoreFormFromSession(){
+  try{
+    const saved=sessionStorage.getItem('cc_order_form');
+    if(!saved)return;
+    const d=JSON.parse(saved);
+    if(d.customer_type){
+      const r=document.querySelector(`input[name="customer_type"][value="${d.customer_type}"]`);
+      if(r)r.checked=true;
+    }
+    ['cat_names','recipient_name','email','instagram','mobile','address','unit','postal']
+      .forEach(id=>{const el=document.getElementById(id);if(el&&d[id]!=null)el.value=d[id]});
+  }catch(e){}
+}
+function clearFormSession(){try{sessionStorage.removeItem('cc_order_form')}catch(e){}}
 
 /* ── CART INTERACTIONS ── */
 function removeFromCart(idx){cart.splice(idx,1);saveCart();renderCartStep();}
@@ -372,7 +465,7 @@ function renderCartStep(){
     el.innerHTML=`<div class="cart-empty-order">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 12px;display:block;opacity:.3" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       <p>Your cart is empty.<br>Head back to the shop to add products.</p>
-      <a href="index.html#products">
+      <a href="index-v3.html#products">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         Back to Shop
       </a>
@@ -424,7 +517,7 @@ function renderCartStep(){
     <div class="cart-total-row"><span>Delivery</span><span>${fmt(DEL)}</span></div>
     <div class="cart-total-row grand"><span>Total</span><span>${fmt(cartGrand())}</span></div>
   </div>`;
-  h+=`<a href="index.html#products" class="add-more-link">
+  h+=`<a href="index-v3.html#products" class="add-more-link">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
     Add more items
   </a>`;
@@ -491,20 +584,68 @@ function validateStep(step){
   return ok;
 }
 
+/* ── SHOW RECEIPT ── */
+function showReceipt(snapCart,snapSubtotal,snapGrand,snapDetails){
+  document.getElementById('receiptOrderId').textContent=currentOrderId;
+  document.getElementById('receiptDate').textContent=new Date().toLocaleString('en-SG',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  let rows='';
+  snapCart.forEach(item=>{
+    const label=item.size?`${item.name} (${item.colorway}, ${item.size})`:`${item.name}`;
+    rows+=`<tr><td>${label}</td><td>${item.qty}</td><td>${fmt(item.price*item.qty)}</td></tr>`;
+  });
+  document.getElementById('receiptItems').innerHTML=rows;
+  document.getElementById('receiptSubtotal').textContent=fmt(snapSubtotal);
+  document.getElementById('receiptDelivery').textContent=fmt(DEL);
+  document.getElementById('receiptTotal').textContent=fmt(snapGrand);
+  const addrParts=[snapDetails.address,snapDetails.unit,`Singapore ${snapDetails.postal}`].filter(Boolean);
+  const detailRows=[
+    ['Cat(s)',snapDetails.cat_names],
+    ['Recipient',snapDetails.recipient_name],
+    ['Email',snapDetails.email],
+    ['Instagram',snapDetails.instagram],
+    ['Mobile',snapDetails.mobile],
+    ['Address',addrParts.join(', ')],
+    ['Customer type',snapDetails.customer_type],
+  ];
+  document.getElementById('receiptDetails').innerHTML=
+    `<p class="receipt-section-lbl" style="margin-top:0">Your Details</p>`+
+    detailRows.filter(([,v])=>v).map(([l,v])=>
+      `<div class="receipt-detail-row"><span class="receipt-detail-lbl">${l}</span><span class="receipt-detail-val">${v}</span></div>`
+    ).join('');
+  document.getElementById('wizardProgress').style.display='none';
+  document.querySelector('.wizard-form').style.display='none';
+  document.getElementById('successBanner').style.display='block';
+  document.getElementById('receiptSection').style.display='block';
+  document.getElementById('receiptSection').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 /* ── SUBMIT ── */
 document.getElementById('orderForm').addEventListener('submit',async function(e){
   e.preventDefault();clearErrors();
   const ack=document.querySelector('input[name="payment_acknowledgment"]:checked');
   if(!ack){showErr('err-ack',true);document.getElementById('ack-check').focus();return}
+  document.getElementById('orderIdField').value=currentOrderId;
   const btn=document.getElementById('submitBtn');
   btn.textContent='Submitting…';btn.disabled=true;
+  const snapCart=[...cart];
+  const snapSubtotal=cartSubtotal();
+  const snapGrand=cartGrand();
+  const snapDetails={
+    cat_names:document.getElementById('cat_names').value.trim(),
+    recipient_name:document.getElementById('recipient_name').value.trim(),
+    email:document.getElementById('email').value.trim(),
+    instagram:document.getElementById('instagram').value.trim(),
+    mobile:document.getElementById('mobile').value.trim(),
+    address:document.getElementById('address').value.trim(),
+    unit:document.getElementById('unit').value.trim(),
+    postal:document.getElementById('postal').value.trim(),
+    customer_type:(document.querySelector('input[name="customer_type"]:checked')||{}).value||'',
+  };
   try{
     const r=await fetch(this.action,{method:'POST',body:new FormData(this),headers:{'Accept':'application/json'}});
     if(r.ok){
-      document.getElementById('successBanner').style.display='block';
-      this.reset();cart=[];saveCart();renderCartStep();
-      goToStep(1);btn.textContent='Order Submitted';
-      window.scrollTo({top:0,behavior:'smooth'});
+      this.reset();cart=[];saveCart();clearFormSession();
+      showReceipt(snapCart,snapSubtotal,snapGrand,snapDetails);
     }else throw new Error();
   }catch{
     btn.textContent='Submit My Order';btn.disabled=false;
@@ -516,6 +657,11 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
 
 /* ── INIT ── */
 renderCartStep();
+restoreFormFromSession();
+document.querySelectorAll('#step-2 input, #step-2 textarea, #step-2 select').forEach(el=>{
+  el.addEventListener('input',saveFormToSession);
+  el.addEventListener('change',saveFormToSession);
+});
 </script>
 </body>
 </html>
