@@ -704,7 +704,7 @@ function validateStep(step){
 }
 
 /* ── SHOW RECEIPT ── */
-function showReceipt(snapCart,snapSubtotal,snapGrand,snapDetails){
+function showReceipt(snapCart,snapSubtotal,snapGrand,snapDetails,snapCoupons){
   document.getElementById('receiptOrderId').textContent=currentOrderId;
   document.getElementById('receiptDate').textContent=new Date().toLocaleString('en-SG',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
   let rows='';
@@ -715,6 +715,17 @@ function showReceipt(snapCart,snapSubtotal,snapGrand,snapDetails){
   document.getElementById('receiptItems').innerHTML=rows;
   document.getElementById('receiptSubtotal').textContent=fmt(snapSubtotal);
   document.getElementById('receiptDelivery').textContent=fmt(DEL);
+  const totalsEl=document.querySelector('.receipt-totals');
+  const grandEl=totalsEl.querySelector('.receipt-total-row.grand');
+  totalsEl.querySelectorAll('.receipt-coupon-row').forEach(el=>el.remove());
+  (snapCoupons||[]).forEach(c=>{
+    const disc=discountForCoupon(c);
+    const row=document.createElement('div');
+    row.className='receipt-total-row receipt-coupon-row';
+    row.style.color='#2E7D32';
+    row.innerHTML=`<span>Coupon (${c.code} — ${c.description})</span><span>-${fmt(disc)}</span>`;
+    totalsEl.insertBefore(row,grandEl);
+  });
   document.getElementById('receiptTotal').textContent=fmt(snapGrand);
   const addrParts=[snapDetails.address,snapDetails.unit,`Singapore ${snapDetails.postal}`].filter(Boolean);
   const detailRows=[
@@ -765,7 +776,7 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
     const r=await fetch(this.action,{method:'POST',body:new FormData(this),headers:{'Accept':'application/json'}});
     if(r.ok){
       this.reset();cart=[];saveCart();clearFormSession();
-      showReceipt(snapCart,snapSubtotal,snapGrand,snapDetails);
+      showReceipt(snapCart,snapSubtotal,snapGrand,snapDetails,[...appliedCoupons]);
     }else throw new Error();
   }catch{
     btn.textContent='Submit My Order';btn.disabled=false;
