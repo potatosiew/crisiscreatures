@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <script src="coupons.js"></script>
   <style>
     /* ── TOKENS ── */
     :root{
@@ -99,7 +100,7 @@
     .cart-qty span{min-width:20px;text-align:center;font-size:.82rem;font-weight:600}
     .cart-remove{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;display:flex;align-items:center;transition:color .18s}
     .cart-remove:hover{color:#c0392b}
-    .cart-totals-block{border-top:1.5px solid var(--border);margin-top:8px;padding-top:14px}
+    .cart-totals-block{margin-top:8px;padding-top:14px}
     .cart-total-row{display:flex;justify-content:space-between;font-size:.84rem;color:var(--muted);padding:4px 0}
     .cart-total-row.grand{font-size:.97rem;font-weight:700;color:var(--text);padding-top:10px;border-top:1px solid var(--border);margin-top:6px}
     .add-more-link{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:600;color:var(--blue-dark);margin-top:16px;border:1.5px solid var(--blue);border-radius:100px;padding:7px 16px;transition:background .18s}
@@ -170,6 +171,26 @@
     .submit-btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 rgba(0,0,0,.18)}
     .submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
+    /* ── COUPON ── */
+    .coupon-wrap{margin-top:16px;padding-top:16px;border-top:1.5px solid var(--border)}
+    .coupon-label{font-size:.78rem;font-weight:600;color:var(--form-txt);margin-bottom:8px;display:block}
+    .coupon-row{display:flex;gap:8px}
+    .coupon-input{flex:1;padding:10px 14px;border:1.5px solid var(--form-bdr);border-radius:var(--radius);font-family:inherit;font-size:.88rem;color:var(--form-txt);background:var(--bg);transition:border-color .2s,box-shadow .2s;text-transform:uppercase;letter-spacing:.06em}
+    .coupon-input:focus{outline:none;border-color:var(--blue-dark);box-shadow:0 0 0 3px rgba(106,158,181,.15);background:#fff}
+    .coupon-input.valid{border-color:#4CAF50;background:#F6FFF6}
+    .coupon-input.invalid{border-color:#c0392b;background:#FFF6F6}
+    .coupon-apply-btn{padding:10px 18px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius);font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .18s}
+    .coupon-apply-btn:hover{opacity:.85}
+    .coupon-feedback{display:none;align-items:center;gap:7px;font-size:.79rem;font-weight:500;margin-top:8px}
+    .coupon-feedback.success{display:flex;color:#2E7D32}
+    .coupon-feedback.error{display:flex;color:#c0392b}
+    .coupon-remove{background:none;border:none;cursor:pointer;font-size:.75rem;font-weight:600;color:var(--muted);text-decoration:underline;margin-left:4px;padding:0;transition:color .15s}
+    .coupon-remove:hover{color:#c0392b}
+    .cart-total-row.discount{color:#2E7D32;font-weight:600}
+    .coupon-chip{display:inline-flex;align-items:center;gap:6px;background:#F1FBF1;border:1.5px solid #A5D6A7;border-radius:100px;padding:5px 10px 5px 12px;font-size:.76rem;font-weight:600;color:#2E7D32}
+    .chip-remove{background:none;border:none;cursor:pointer;color:#4CAF50;font-size:1rem;line-height:1;padding:0;display:flex;align-items:center;transition:color .15s}
+    .chip-remove:hover{color:#c0392b}
+
     /* ── RESPONSIVE ── */
     @media(max-width:600px){
       .order-nav{padding:14px 20px}
@@ -186,11 +207,11 @@
 
 <!-- NAV -->
 <nav class="order-nav" aria-label="Order page navigation">
-  <a href="index.html" class="order-nav-logo" aria-label="Back to Crisis Creatures shop">
+  <a href="index-v3.html" class="order-nav-logo" aria-label="Back to Crisis Creatures shop">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="6.5" cy="5.5" rx="2" ry="2.5"/><ellipse cx="17.5" cy="5.5" rx="2" ry="2.5"/><ellipse cx="4" cy="11" rx="1.8" ry="2.2"/><ellipse cx="20" cy="11" rx="1.8" ry="2.2"/><path d="M12 22c-2.8 0-6.5-2.8-6.5-6.5 0-1.8.6-3 1.8-4 .8-.7 1.8-1.1 2.7-1.3.6-.1 1.2-.2 2-.2s1.4.1 2 .2c.9.2 1.9.6 2.7 1.3 1.2 1 1.8 2.2 1.8 4 0 3.7-3.7 6.5-6.5 6.5z"/></svg>
     Crisis Creatures
   </a>
-  <a href="index.html" class="back-link">
+  <a href="index-v3.html" class="back-link">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
     Back to Shop
   </a>
@@ -198,7 +219,7 @@
 
 <main class="order-page">
   <h1 class="order-title">Your Order</h1>
-  <p class="order-subtitle">Soft launch — handled personally. Complete payment after submitting.</p>
+  <p class="order-subtitle">Every order is handled personally. Complete payment after submitting.</p>
 
   <div class="success-banner" id="successBanner" role="alert">
     Order submitted! <a href="#receipt" style="color:inherit;font-weight:700;text-decoration:underline">View your receipt below ↓</a> — don't forget to <strong>DM your payment screenshot + cat photo(s)</strong> to <strong>@crisiscreatures</strong> on Instagram to lock in your order.
@@ -222,13 +243,16 @@
     <input type="hidden" name="order_id" id="orderIdField">
     <input type="hidden" name="cart_summary" id="cartSummaryField">
     <input type="hidden" name="order_total" id="orderTotalField">
+    <input type="hidden" name="coupon_code" id="couponCodeField">
+    <input type="hidden" name="coupon_discount" id="couponDiscountField">
 
     <!-- STEP 1: YOUR ORDER -->
     <div class="step-panel active" id="step-1">
       <div class="step-heading">01 — Your Order</div>
       <p class="step-desc">Review your cart. Adjust quantities or remove items before continuing.</p>
       <div id="cartContent" aria-live="polite"></div>
-      <div class="group-error" id="err-cart" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Your cart is empty — <a href="index.html#products" style="color:inherit;text-decoration:underline">add products</a> before continuing.</div>
+
+      <div class="group-error" id="err-cart" role="alert"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Your cart is empty — <a href="index-v3.html#products" style="color:inherit;text-decoration:underline">add products</a> before continuing.</div>
     </div>
 
     <!-- STEP 2: YOUR DETAILS -->
@@ -319,7 +343,18 @@
         <div id="summaryContent"></div>
       </div>
 
-      <div class="payment-box">
+      <div class="coupon-wrap">
+        <label class="coupon-label" for="couponInput">Have a coupon code?</label>
+        <div class="coupon-row">
+          <input class="coupon-input" id="couponInput" type="text" placeholder="Enter code" autocomplete="off" maxlength="32"
+            oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter'){event.preventDefault();applyCoupon()}">
+          <button type="button" class="coupon-apply-btn" onclick="applyCoupon()">Apply</button>
+        </div>
+        <div class="coupon-feedback" id="couponFeedback"></div>
+        <div id="appliedChips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
+      </div>
+
+      <div class="payment-box" style="margin-top:24px">
         <h4>How to complete your order</h4>
         <ol class="steps-list">
           <li>Submit this form — your order total is shown in the summary above.</li>
@@ -395,6 +430,7 @@
 <script>
 const DEL=3.50;
 let cart=[];
+let appliedCoupons=[]; /* [{code, type, value, label, description}] */
 
 /* ── LOAD CART FROM LOCALSTORAGE ── */
 try{const saved=localStorage.getItem('cc_cart');if(saved)cart=JSON.parse(saved)}catch(e){}
@@ -403,7 +439,85 @@ function saveCart(){try{localStorage.setItem('cc_cart',JSON.stringify(cart))}cat
 function fmt(n){return'$'+n.toFixed(2)}
 function cartSubtotal(){return cart.reduce((s,i)=>s+i.price*i.qty,0)}
 function cartCount(){return cart.reduce((s,i)=>s+i.qty,0)}
-function cartGrand(){return cart.length?cartSubtotal()+DEL:0}
+function discountForCoupon(c){
+  const sub=cartSubtotal();
+  if(c.type==='free_shipping')return DEL;
+  if(c.type==='percentage')return parseFloat((sub*c.value/100).toFixed(2));
+  if(c.type==='fixed')return parseFloat(Math.min(c.value,sub).toFixed(2));
+  return 0;
+}
+function totalCouponDiscount(){
+  /* Free shipping only counts once even if multiple free-shipping codes applied */
+  let disc=0,freeShippingCounted=false;
+  appliedCoupons.forEach(c=>{
+    if(c.type==='free_shipping'){if(!freeShippingCounted){disc+=DEL;freeShippingCounted=true}}
+    else disc+=discountForCoupon(c);
+  });
+  return parseFloat(Math.min(disc,cartSubtotal()+DEL).toFixed(2));
+}
+function cartGrand(){
+  if(!cart.length)return 0;
+  return Math.max(0,cartSubtotal()+DEL-totalCouponDiscount());
+}
+
+/* ── COUPON VALIDATION ── */
+function applyCoupon(){
+  const input=document.getElementById('couponInput');
+  const feedback=document.getElementById('couponFeedback');
+  const code=input.value.trim().toUpperCase();
+  feedback.className='coupon-feedback';
+  input.classList.remove('valid','invalid');
+  if(!code){
+    feedback.className='coupon-feedback error';
+    feedback.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Please enter a coupon code.';
+    return;
+  }
+  if(appliedCoupons.find(c=>c.code===code)){
+    input.classList.add('invalid');
+    feedback.className='coupon-feedback error';
+    feedback.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> This code has already been applied.';
+    return;
+  }
+  const config=typeof COUPON_CONFIG!=='undefined'?COUPON_CONFIG:{coupons:{}};
+  const def=config.coupons[code];
+  if(!def||!def.active){
+    input.classList.add('invalid');
+    feedback.className='coupon-feedback error';
+    feedback.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Invalid or expired coupon code.';
+    return;
+  }
+  appliedCoupons.push({code,type:def.type,value:def.value||0,label:def.label,description:def.description});
+  input.value='';
+  input.classList.add('valid');
+  setTimeout(()=>input.classList.remove('valid'),1200);
+  feedback.className='coupon-feedback success';
+  feedback.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> <strong>${def.label}</strong> applied!`;
+  setTimeout(()=>{feedback.className='coupon-feedback';feedback.innerHTML=''},2500);
+  syncCouponFields();
+  renderAppliedChips();
+  renderOrderSummary();
+}
+function removeCoupon(code){
+  appliedCoupons=appliedCoupons.filter(c=>c.code!==code);
+  syncCouponFields();
+  renderAppliedChips();
+  renderOrderSummary();
+}
+function syncCouponFields(){
+  document.getElementById('couponCodeField').value=appliedCoupons.map(c=>c.code).join(', ');
+  document.getElementById('couponDiscountField').value=fmt(totalCouponDiscount());
+}
+function renderAppliedChips(){
+  const wrap=document.getElementById('appliedChips');
+  if(!wrap)return;
+  if(!appliedCoupons.length){wrap.innerHTML='';return}
+  wrap.innerHTML=appliedCoupons.map(c=>`
+    <span class="coupon-chip">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      <span>${c.code}</span>
+      <button type="button" class="chip-remove" onclick="removeCoupon('${c.code}')" aria-label="Remove ${c.code}">×</button>
+    </span>`).join('');
+}
 
 /* ── ORDER ID ── */
 function generateOrderId(){
@@ -465,7 +579,7 @@ function renderCartStep(){
     el.innerHTML=`<div class="cart-empty-order">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 12px;display:block;opacity:.3" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       <p>Your cart is empty.<br>Head back to the shop to add products.</p>
-      <a href="index.html#products">
+      <a href="index-v3.html#products">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         Back to Shop
       </a>
@@ -503,28 +617,31 @@ function renderCartStep(){
     h+=`<div class="bungee-upsell">
       <div class="bungee-upsell-info">
         <strong>Add a Bungee Leash?</strong>
-        <span>Shock-absorbing · protects your cat's neck · $13.40 (U.P. $14.90)</span>
+        <span>Shock-absorbing · protects your cat's neck</span>
       </div>
-      <span class="bungee-upsell-price">$13.40</span>
-      <button type="button" class="bungee-add-btn" onclick="addToCart({id:'bungee',name:'Bungee Leash',price:13.40})" aria-label="Add Bungee Leash to cart">
+      <span class="bungee-upsell-price">$14.90</span>
+      <button type="button" class="bungee-add-btn" onclick="addToCart({id:'bungee',name:'Bungee Leash',price:14.90})" aria-label="Add Bungee Leash to cart">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
       </button>
     </div>`;
   }
 
+  const totalDisc=totalCouponDiscount();
   h+=`<div class="cart-totals-block">
     <div class="cart-total-row"><span>Subtotal</span><span>${fmt(cartSubtotal())}</span></div>
     <div class="cart-total-row"><span>Delivery</span><span>${fmt(DEL)}</span></div>
+    ${appliedCoupons.map(c=>`<div class="cart-total-row discount"><span>Coupon (${c.code})</span><span>−${fmt(discountForCoupon(c))}</span></div>`).join('')}
     <div class="cart-total-row grand"><span>Total</span><span>${fmt(cartGrand())}</span></div>
   </div>`;
-  h+=`<a href="index.html#products" class="add-more-link">
+  h+=`<a href="index-v3.html#products" class="add-more-link">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
     Add more items
   </a>`;
   h+='</div>';
   el.innerHTML=h;
   const lines=cart.map(item=>`${item.name}${item.size?' ('+item.colorway+', '+item.size+')':''} x${item.qty} = ${fmt(item.price*item.qty)}`);
-  summaryField.value=lines.join('; ')+` | Delivery: ${fmt(DEL)} | Total: ${fmt(cartGrand())}`;
+  const couponLines=appliedCoupons.map(c=>`Coupon ${c.code} (${c.description}): -${fmt(discountForCoupon(c))}`);
+  summaryField.value=lines.join('; ')+` | Delivery: ${fmt(DEL)}`+(couponLines.length?' | '+couponLines.join(' | '):'')+` | Total: ${fmt(cartGrand())}`;
   totalField.value=fmt(cartGrand());
   renderOrderSummary();
 }
@@ -539,7 +656,9 @@ function renderOrderSummary(){
     const label=item.size?`${item.name} (${item.colorway}, ${item.size}) × ${item.qty}`:`${item.name} × ${item.qty}`;
     h+=`<div class="summary-row"><span>${label}</span><span>${fmt(item.price*item.qty)}</span></div>`;
   });
-  h+=`<div class="summary-row delivery"><span>Delivery (flat fee)</span><span>${fmt(DEL)}</span></div>`;
+  const hasFreeship=appliedCoupons.some(c=>c.type==='free_shipping');
+  h+=`<div class="summary-row delivery"><span>Delivery</span><span>${hasFreeship?'<s style="opacity:.45">'+fmt(DEL)+'</s> <span style="color:#2E7D32;font-weight:600">FREE</span>':fmt(DEL)}</span></div>`;
+  appliedCoupons.forEach(c=>{h+=`<div class="summary-row" style="color:#2E7D32;font-weight:600"><span>Coupon (${c.code} — ${c.description})</span><span>−${fmt(discountForCoupon(c))}</span></div>`});
   h+=`<div class="summary-row total"><span>Total</span><span>${fmt(cartGrand())}</span></div>`;
   el.innerHTML=h;
 }
@@ -625,6 +744,7 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
   const ack=document.querySelector('input[name="payment_acknowledgment"]:checked');
   if(!ack){showErr('err-ack',true);document.getElementById('ack-check').focus();return}
   document.getElementById('orderIdField').value=currentOrderId;
+  syncCouponFields();
   const btn=document.getElementById('submitBtn');
   btn.textContent='Submitting…';btn.disabled=true;
   const snapCart=[...cart];
