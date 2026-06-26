@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coupon Centre — Crisis Creatures Admin</title>
+  <script src="coupons.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#FBF7F0;--surface:#FFFFFF;--text:#1E1A16;--muted:rgba(30,26,22,0.52);
+      --border:#EAE2D6;--shadow-sm:0 2px 8px rgba(0,0,0,.05);--shadow-md:0 4px 24px rgba(0,0,0,.08);
+      --blue:#9BBECE;--blue-dark:#6A9EB5;--blue-bg:#EBF4F8;
+      --pink:#E8A8B4;--pink-bg:#FCEEF1;
+      --green:#4CAF50;--green-bg:#F1FBF1;--green-dark:#2E7D32;
+      --yellow:#EFE272;--yellow-bg:#FDFAE9;--yellow-dark:#C8BB2D;
+      --red:#c0392b;--red-bg:#FFF0EE;
+      --radius:10px;--radius-lg:18px;--radius-xl:26px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased}
+    button,input,select,textarea{font-family:inherit}
+    a{text-decoration:none;color:inherit}
+
+    /* ── LOGIN GATE ── */
+    .gate{position:fixed;inset:0;background:var(--text);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px}
+    .gate-card{background:var(--surface);border-radius:var(--radius-xl);padding:44px 40px;max-width:360px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.3);text-align:center}
+    .gate-logo{font-weight:700;font-size:1rem;letter-spacing:.04em;color:var(--muted);margin-bottom:28px;display:flex;align-items:center;justify-content:center;gap:8px}
+    .gate-title{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+    .gate-sub{font-size:.84rem;color:var(--muted);margin-bottom:28px}
+    .gate-input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:.95rem;background:var(--bg);color:var(--text);transition:border-color .2s,box-shadow .2s;text-align:center;letter-spacing:.12em;margin-bottom:12px}
+    .gate-input:focus{outline:none;border-color:var(--blue-dark);box-shadow:0 0 0 3px rgba(106,158,181,.15);background:#fff}
+    .gate-input.shake{animation:shake .35s cubic-bezier(.36,.07,.19,.97)}
+    @keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-4px)}40%,60%{transform:translateX(4px)}}
+    .gate-btn{width:100%;padding:14px;background:var(--text);color:var(--bg);border:none;border-radius:100px;font-weight:600;font-size:.9rem;cursor:pointer;transition:opacity .2s;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+    .gate-btn:hover{opacity:.88}
+    .gate-err{font-size:.78rem;color:var(--red);margin-top:10px;min-height:18px}
+
+    /* ── APP SHELL ── */
+    .app{display:none}
+    .app.visible{display:block}
+    .topbar{background:var(--surface);border-bottom:1.5px solid var(--border);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow-sm)}
+    .topbar-logo{font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:9px;color:var(--text)}
+    .topbar-right{display:flex;align-items:center;gap:16px}
+    .topbar-badge{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--pink-bg);color:#C0687A;border:1.5px solid var(--pink);padding:5px 12px;border-radius:100px}
+    .logout-btn{font-size:.78rem;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;transition:color .15s;padding:6px 10px;border-radius:8px}
+    .logout-btn:hover{color:var(--text);background:var(--border)}
+
+    /* ── PAGE ── */
+    .page{max-width:860px;margin:0 auto;padding:44px 24px 100px}
+    .page-header{margin-bottom:36px}
+    .page-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-.03em;margin-bottom:6px}
+    .page-sub{font-size:.88rem;color:var(--muted);line-height:1.6}
+
+    /* ── STATS ROW ── */
+    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px}
+    .stat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;box-shadow:var(--shadow-sm)}
+    .stat-label{font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+    .stat-value{font-size:2rem;font-weight:700;letter-spacing:-.03em;color:var(--text);line-height:1}
+    .stat-value.green{color:var(--green-dark)}
+
+    /* ── SECTION ── */
+    .section{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:24px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;border-bottom:1.5px solid var(--border);gap:16px}
+    .section-head h2{font-size:1rem;font-weight:700;letter-spacing:-.01em}
+    .section-body{padding:0}
+
+    /* ── COUPON LIST ── */
+    .coupon-list-empty{padding:44px 28px;text-align:center;color:var(--muted);font-size:.88rem}
+    .coupon-row{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:16px;padding:16px 28px;border-bottom:1.5px solid var(--border);transition:background .15s}
+    .coupon-row:last-child{border-bottom:none}
+    .coupon-row:hover{background:var(--bg)}
+    .toggle-wrap{display:flex;align-items:center}
+    .toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+    .toggle input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-track{position:absolute;inset:0;background:var(--border);border-radius:100px;cursor:pointer;transition:background .2s}
+    .toggle input:checked+.toggle-track{background:var(--green)}
+    .toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .toggle input:checked~.toggle-thumb{transform:translateX(18px)}
+    .coupon-info{min-width:0}
+    .coupon-code{font-family:monospace;font-size:.95rem;font-weight:700;letter-spacing:.1em;color:var(--text);margin-bottom:2px}
+    .coupon-desc-text{font-size:.78rem;color:var(--muted)}
+    .coupon-badge{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 11px;border-radius:100px;white-space:nowrap;flex-shrink:0}
+    .badge-free-shipping{background:var(--blue-bg);color:var(--blue-dark)}
+    .badge-percentage{background:var(--yellow-bg);color:var(--yellow-dark)}
+    .badge-fixed{background:var(--green-bg);color:var(--green-dark)}
+    .coupon-actions{display:flex;gap:6px;flex-shrink:0}
+    .icon-btn{width:32px;height:32px;border:1.5px solid var(--border);border-radius:8px;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .15s;flex-shrink:0}
+    .icon-btn:hover{border-color:var(--text);color:var(--text);background:var(--bg)}
+    .icon-btn.danger:hover{border-color:var(--red);color:var(--red);background:var(--red-bg)}
+
+    /* ── ADD COUPON FORM ── */
+    .add-form{padding:24px 28px;display:flex;flex-direction:column;gap:16px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field label{font-size:.8rem;font-weight:600;color:var(--text)}
+    .field input,.field select{padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:.88rem;background:var(--bg);color:var(--text);transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+    .field input:focus,.field select:focus{outline:none;border-color:var(--blue-dark);box-shadow:0 0 0 3px rgba(106,158,181,.15);background:#fff}
+    .field input.code-field{text-transform:uppercase;letter-spacing:.1em;font-family:monospace;font-size:.95rem;font-weight:700}
+    .field-hint{font-size:.73rem;color:var(--muted)}
+    .value-wrap{display:none}
+    .add-form-footer{display:flex;justify-content:flex-end;gap:10px;padding-top:4px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:100px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;border:none}
+    .btn-primary{background:var(--text);color:var(--bg);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+    .btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-ghost{background:none;border:1.5px solid var(--border);color:var(--muted)}
+    .btn-ghost:hover{border-color:var(--text);color:var(--text);background:var(--bg)}
+    .form-err{font-size:.78rem;color:var(--red);display:none;margin-top:-8px}
+
+    /* ── EXPORT SECTION ── */
+    .export-body{padding:24px 28px}
+    .export-info{font-size:.86rem;color:var(--muted);line-height:1.7;margin-bottom:20px}
+    .export-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+    .export-step{display:flex;align-items:flex-start;gap:12px;font-size:.84rem;color:var(--text);line-height:1.5}
+    .step-num{width:22px;height:22px;border-radius:50%;background:var(--text);color:var(--bg);font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .export-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn-export{background:var(--green-dark);color:#fff;padding:12px 28px;border-radius:100px;font-size:.88rem;font-weight:600;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;transition:opacity .18s,transform .18s;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+    .btn-export:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-preview{background:none;border:1.5px solid var(--border);color:var(--text);padding:11px 22px;border-radius:100px;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .18s}
+    .btn-preview:hover{border-color:var(--text);background:var(--bg)}
+    .code-preview{display:none;margin-top:18px;background:#1E1A16;border-radius:var(--radius-lg);padding:20px 22px;overflow-x:auto}
+    .code-preview pre{color:#EDE7D4;font-family:monospace;font-size:.78rem;line-height:1.7;white-space:pre}
+    .copy-btn{margin-top:12px;background:rgba(237,231,212,.12);border:1px solid rgba(237,231,212,.2);color:#EDE7D4;padding:7px 16px;border-radius:100px;font-size:.75rem;font-weight:600;cursor:pointer;transition:background .18s}
+    .copy-btn:hover{background:rgba(237,231,212,.22)}
+
+    /* ── TOAST ── */
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:100px;font-size:.84rem;font-weight:600;opacity:0;transition:all .3s cubic-bezier(.22,1,.36,1);pointer-events:none;z-index:999;white-space:nowrap;box-shadow:var(--shadow-md)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    /* ── EDIT MODAL ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(30,26,22,.45);z-index:200;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(3px)}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--surface);border-radius:var(--radius-xl);padding:32px 28px;max-width:400px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.25);animation:modalIn .25s cubic-bezier(.22,1,.36,1)}
+    @keyframes modalIn{from{transform:scale(.95) translateY(8px);opacity:0}to{transform:none;opacity:1}}
+    .modal-title{font-size:1.1rem;font-weight:700;margin-bottom:20px}
+    .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+
+    @media(max-width:640px){
+      .topbar{padding:13px 20px}
+      .page{padding:28px 16px 80px}
+      .stats-row{grid-template-columns:1fr 1fr}
+      .stats-row .stat-card:last-child{grid-column:1/-1}
+      .section-head{padding:16px 20px}
+      .coupon-row{padding:14px 20px;grid-template-columns:auto 1fr auto;gap:12px}
+      .coupon-badge{display:none}
+      .add-form{padding:18px 20px}
+      .form-row{grid-template-columns:1fr}
+      .export-body{padding:18px 20px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-logo">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><ellipse cx="6.5" cy="5.5" rx="2" ry="2.5"/><ellipse cx="17.5" cy="5.5" rx="2" ry="2.5"/><ellipse cx="4" cy="11" rx="1.8" ry="2.2"/><ellipse cx="20" cy="11" rx="1.8" ry="2.2"/><path d="M12 22c-2.8 0-6.5-2.8-6.5-6.5 0-1.8.6-3 1.8-4 .8-.7 1.8-1.1 2.7-1.3.6-.1 1.2-.2 2-.2s1.4.1 2 .2c.9.2 1.9.6 2.7 1.3 1.2 1 1.8 2.2 1.8 4 0 3.7-3.7 6.5-6.5 6.5z"/></svg>
+      Crisis Creatures
+    </div>
+    <h1 class="gate-title">Admin Login</h1>
+    <p class="gate-sub">Enter your admin password to manage coupon codes.</p>
+    <input class="gate-input" id="pwInput" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()">
+    <button class="gate-btn" onclick="checkPassword()">Enter</button>
+    <div class="gate-err" id="gateErr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><ellipse cx="6.5" cy="5.5" rx="2" ry="2.5"/><ellipse cx="17.5" cy="5.5" rx="2" ry="2.5"/><ellipse cx="4" cy="11" rx="1.8" ry="2.2"/><ellipse cx="20" cy="11" rx="1.8" ry="2.2"/><path d="M12 22c-2.8 0-6.5-2.8-6.5-6.5 0-1.8.6-3 1.8-4 .8-.7 1.8-1.1 2.7-1.3.6-.1 1.2-.2 2-.2s1.4.1 2 .2c.9.2 1.9.6 2.7 1.3 1.2 1 1.8 2.2 1.8 4 0 3.7-3.7 6.5-6.5 6.5z"/></svg>
+      Crisis Creatures
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-badge">Coupon Centre</span>
+      <button class="logout-btn" onclick="logout()">Log out</button>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1 class="page-title">Coupon Centre</h1>
+      <p class="page-sub">Manage your discount codes. After making changes, export and replace <code>coupons.js</code> on your hosting.</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row" id="statsRow"></div>
+
+    <!-- ACTIVE COUPONS -->
+    <div class="section">
+      <div class="section-head">
+        <h2>Active Coupon Codes</h2>
+        <button class="btn btn-primary" onclick="showAddForm()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          New Coupon
+        </button>
+      </div>
+      <div class="section-body" id="couponList"></div>
+    </div>
+
+    <!-- ADD COUPON -->
+    <div class="section" id="addSection" style="display:none">
+      <div class="section-head">
+        <h2 id="addSectionTitle">New Coupon</h2>
+        <button class="btn btn-ghost" onclick="hideAddForm()">Cancel</button>
+      </div>
+      <div class="add-form">
+        <div class="form-row">
+          <div class="field">
+            <label for="newCode">Coupon Code *</label>
+            <input class="code-field" id="newCode" type="text" placeholder="e.g. FREESHIP" maxlength="32" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+            <span class="field-hint">Letters and numbers only, no spaces</span>
+          </div>
+          <div class="field">
+            <label for="newType">Discount Type *</label>
+            <select id="newType" onchange="onTypeChange()">
+              <option value="free_shipping">Free Shipping</option>
+              <option value="percentage">Percentage Off (%)</option>
+              <option value="fixed">Fixed Amount Off ($)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field value-wrap" id="valueWrap">
+          <label for="newValue" id="valueLabel">Discount Value *</label>
+          <input id="newValue" type="number" min="1" max="100" placeholder="e.g. 10" step="0.01">
+          <span class="field-hint" id="valueHint">Enter a number</span>
+        </div>
+        <div class="field">
+          <label for="newDesc">Description (shown to customer)</label>
+          <input id="newDesc" type="text" placeholder="e.g. Free shipping on your order">
+        </div>
+        <div class="form-err" id="addErr"></div>
+        <div class="add-form-footer">
+          <button class="btn btn-primary" onclick="saveNewCoupon()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Save Coupon
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="section">
+      <div class="section-head">
+        <h2>Export & Deploy</h2>
+      </div>
+      <div class="export-body">
+        <p class="export-info">After adding, removing, or toggling coupons above, export your updated <code>coupons.js</code> and replace the file on your hosting to make changes live.</p>
+        <div class="export-steps">
+          <div class="export-step"><span class="step-num">1</span><span>Click <strong>Preview file</strong> below, then <strong>Copy to clipboard</strong></span></div>
+          <div class="export-step"><span class="step-num">2</span><span>Go to your GitHub repo → open <code>coupons.js</code> → click the ✏️ pencil (Edit) icon</span></div>
+          <div class="export-step"><span class="step-num">3</span><span>Select all, paste your copied content, then click <strong>Commit changes</strong></span></div>
+          <div class="export-step"><span class="step-num">4</span><span>GitHub Pages redeploys automatically — live in ~30 seconds ✓</span></div>
+        </div>
+        <p style="font-size:.78rem;color:var(--muted);margin-bottom:18px">Alternatively, download the file and push it via Git if you prefer working locally.</p>
+        <div class="export-actions">
+          <button class="btn-export" onclick="downloadConfig()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download coupons.js
+          </button>
+          <button class="btn-preview" onclick="togglePreview()">Preview file</button>
+        </div>
+        <div class="code-preview" id="codePreview">
+          <pre id="codePreviewText"></pre>
+          <button class="copy-btn" onclick="copyCode()">Copy to clipboard</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">Edit Coupon</div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="field">
+        <label>Coupon Code</label>
+        <input class="code-field" id="editCode" type="text" disabled style="opacity:.55;cursor:not-allowed">
+      </div>
+      <div class="field">
+        <label for="editType">Discount Type</label>
+        <select id="editType" onchange="onEditTypeChange()">
+          <option value="free_shipping">Free Shipping</option>
+          <option value="percentage">Percentage Off (%)</option>
+          <option value="fixed">Fixed Amount Off ($)</option>
+        </select>
+      </div>
+      <div class="field" id="editValueWrap" style="display:none">
+        <label for="editValue" id="editValueLabel">Value</label>
+        <input id="editValue" type="number" min="1" step="0.01">
+      </div>
+      <div class="field">
+        <label for="editDesc">Description</label>
+        <input id="editDesc" type="text">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeEdit()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── PASSWORD ── */
+const ADMIN_PASSWORD = 'crisiscreatures2026';
+const SESSION_KEY = 'cc_admin_auth';
+
+function checkPassword(){
+  const val = document.getElementById('pwInput').value;
+  if(val === ADMIN_PASSWORD){
+    sessionStorage.setItem(SESSION_KEY,'1');
+    document.getElementById('gate').style.display='none';
+    document.getElementById('app').classList.add('visible');
+    init();
+  } else {
+    const inp = document.getElementById('pwInput');
+    document.getElementById('gateErr').textContent = 'Incorrect password. Try again.';
+    inp.value='';
+    inp.classList.add('shake');
+    setTimeout(()=>inp.classList.remove('shake'),400);
+    inp.focus();
+  }
+}
+
+function logout(){
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+/* ── STATE ── */
+/* Work from a deep copy so we don't mutate the loaded COUPON_CONFIG until export */
+let state = {coupons:{}};
+
+function loadState(){
+  const base = (typeof COUPON_CONFIG!=='undefined'&&COUPON_CONFIG.coupons) ? COUPON_CONFIG.coupons : {};
+  state.coupons = JSON.parse(JSON.stringify(base));
+}
+
+/* ── INIT ── */
+function init(){
+  loadState();
+  render();
+}
+
+/* ── RENDER ── */
+function render(){
+  renderStats();
+  renderList();
+}
+
+function renderStats(){
+  const codes = Object.keys(state.coupons);
+  const active = codes.filter(k=>state.coupons[k].active).length;
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Total Codes</div><div class="stat-value">${codes.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Active</div><div class="stat-value green">${active}</div></div>
+    <div class="stat-card"><div class="stat-label">Inactive</div><div class="stat-value">${codes.length-active}</div></div>`;
+}
+
+function renderList(){
+  const el = document.getElementById('couponList');
+  const codes = Object.keys(state.coupons);
+  if(!codes.length){
+    el.innerHTML='<div class="coupon-list-empty">No coupon codes yet. Click <strong>New Coupon</strong> to add one.</div>';
+    return;
+  }
+  el.innerHTML = codes.map(code=>{
+    const c = state.coupons[code];
+    const badge = badgeHTML(c);
+    return `<div class="coupon-row">
+      <div class="toggle-wrap">
+        <label class="toggle" title="${c.active?'Deactivate':'Activate'} ${code}">
+          <input type="checkbox" ${c.active?'checked':''} onchange="toggleCoupon('${code}',this.checked)">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      <div class="coupon-info">
+        <div class="coupon-code">${code}</div>
+        <div class="coupon-desc-text">${c.description||descriptionFor(c)}</div>
+      </div>
+      ${badge}
+      <div class="coupon-actions">
+        <button class="icon-btn" onclick="openEdit('${code}')" title="Edit">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="icon-btn danger" onclick="deleteCoupon('${code}')" title="Delete">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function badgeHTML(c){
+  if(c.type==='free_shipping') return '<span class="coupon-badge badge-free-shipping">Free Shipping</span>';
+  if(c.type==='percentage')    return `<span class="coupon-badge badge-percentage">${c.value}% Off</span>`;
+  if(c.type==='fixed')         return `<span class="coupon-badge badge-fixed">$${c.value} Off</span>`;
+  return '';
+}
+
+function descriptionFor(c){
+  if(c.type==='free_shipping') return 'Waives the $3.50 delivery fee';
+  if(c.type==='percentage')    return `${c.value}% off subtotal`;
+  if(c.type==='fixed')         return `$${c.value} off subtotal`;
+  return '';
+}
+
+/* ── TOGGLE ── */
+function toggleCoupon(code,active){
+  state.coupons[code].active = active;
+  render();
+  toast(active ? `✓ ${code} activated` : `${code} deactivated`);
+}
+
+/* ── DELETE ── */
+function deleteCoupon(code){
+  if(!confirm(`Delete coupon "${code}"? This cannot be undone.`)) return;
+  delete state.coupons[code];
+  render();
+  toast(`${code} deleted`);
+}
+
+/* ── ADD FORM ── */
+function showAddForm(){
+  document.getElementById('addSection').style.display='block';
+  document.getElementById('addSectionTitle').textContent='New Coupon';
+  document.getElementById('newCode').value='';
+  document.getElementById('newType').value='free_shipping';
+  document.getElementById('newDesc').value='';
+  document.getElementById('newValue').value='';
+  document.getElementById('addErr').style.display='none';
+  onTypeChange();
+  document.getElementById('newCode').focus();
+  document.getElementById('addSection').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function hideAddForm(){
+  document.getElementById('addSection').style.display='none';
+}
+function onTypeChange(){
+  const type = document.getElementById('newType').value;
+  const wrap = document.getElementById('valueWrap');
+  const lbl  = document.getElementById('valueLabel');
+  const hint = document.getElementById('valueHint');
+  if(type==='free_shipping'){wrap.style.display='none'}
+  else{
+    wrap.style.display='flex';
+    if(type==='percentage'){lbl.textContent='Percentage Off (%) *';hint.textContent='e.g. 10 = 10% off the subtotal';document.getElementById('newValue').max=100}
+    else{lbl.textContent='Fixed Amount Off ($) *';hint.textContent='e.g. 5 = $5.00 off the subtotal';document.getElementById('newValue').max=9999}
+  }
+}
+function saveNewCoupon(){
+  const code = document.getElementById('newCode').value.trim().toUpperCase();
+  const type = document.getElementById('newType').value;
+  const desc = document.getElementById('newDesc').value.trim();
+  const value= parseFloat(document.getElementById('newValue').value);
+  const errEl= document.getElementById('addErr');
+  errEl.style.display='none';
+  if(!code){errEl.textContent='Please enter a coupon code.';errEl.style.display='block';return}
+  if(state.coupons[code]){errEl.textContent=`Code "${code}" already exists.`;errEl.style.display='block';return}
+  if(type!=='free_shipping'&&(!value||value<=0)){errEl.textContent='Please enter a valid discount value.';errEl.style.display='block';return}
+  const typeLabels={free_shipping:'Free Shipping',percentage:`${value}% Off`,fixed:`$${value} Off`};
+  state.coupons[code]={
+    active:true,
+    type,
+    ...(type!=='free_shipping'&&{value}),
+    label: typeLabels[type],
+    description: desc || descriptionFor({type,value})
+  };
+  hideAddForm();
+  render();
+  toast(`✓ ${code} added`);
+}
+
+/* ── EDIT MODAL ── */
+let editingCode = null;
+function openEdit(code){
+  editingCode = code;
+  const c = state.coupons[code];
+  document.getElementById('editCode').value = code;
+  document.getElementById('editType').value = c.type;
+  document.getElementById('editValue').value = c.value||'';
+  document.getElementById('editDesc').value = c.description||'';
+  onEditTypeChange();
+  document.getElementById('editModal').classList.add('open');
+}
+function closeEdit(){
+  document.getElementById('editModal').classList.remove('open');
+  editingCode=null;
+}
+function onEditTypeChange(){
+  const type = document.getElementById('editType').value;
+  const wrap = document.getElementById('editValueWrap');
+  const lbl  = document.getElementById('editValueLabel');
+  if(type==='free_shipping'){wrap.style.display='none'}
+  else{
+    wrap.style.display='flex';
+    lbl.textContent = type==='percentage' ? 'Percentage Off (%)' : 'Fixed Amount Off ($)';
+  }
+}
+function saveEdit(){
+  if(!editingCode) return;
+  const type = document.getElementById('editType').value;
+  const value= parseFloat(document.getElementById('editValue').value);
+  const desc = document.getElementById('editDesc').value.trim();
+  if(type!=='free_shipping'&&(!value||value<=0)){alert('Please enter a valid discount value.');return}
+  const typeLabels={free_shipping:'Free Shipping',percentage:`${value}% Off`,fixed:`$${value} Off`};
+  state.coupons[editingCode] = {
+    ...state.coupons[editingCode],
+    type,
+    ...(type!=='free_shipping'?{value}:{value:undefined}),
+    label: typeLabels[type],
+    description: desc || descriptionFor({type,value})
+  };
+  if(state.coupons[editingCode].value===undefined) delete state.coupons[editingCode].value;
+  closeEdit();
+  render();
+  toast(`✓ ${editingCode} updated`);
+}
+document.getElementById('editModal').addEventListener('click',e=>{if(e.target===document.getElementById('editModal'))closeEdit()});
+
+/* ── EXPORT ── */
+function buildConfigString(){
+  const d = new Date().toISOString().slice(0,10);
+  const couponsJson = JSON.stringify(state.coupons, null, 4)
+    .replace(/"([^"]+)":/g, '"$1":');
+  return `/* ── CRISIS CREATURES · COUPON CONFIG ──────────────────────────────────────
+   Edit this file via admin.html or replace it with an exported copy.
+   Supported types:  "free_shipping" | "percentage" | "fixed"
+   ───────────────────────────────────────────────────────────────────────── */
+
+var COUPON_CONFIG = {
+  version: 1,
+  updated: "${d}",
+  coupons: ${couponsJson.split('\n').map((l,i)=>i===0?l:'  '+l).join('\n')}
+};
+`;
+}
+
+function downloadConfig(){
+  const content = buildConfigString();
+  const blob = new Blob([content],{type:'text/javascript'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'coupons.js';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('✓ coupons.js downloaded');
+}
+
+let previewOpen = false;
+function togglePreview(){
+  previewOpen = !previewOpen;
+  const el = document.getElementById('codePreview');
+  if(previewOpen){
+    document.getElementById('codePreviewText').textContent = buildConfigString();
+    el.style.display='block';
+  } else {
+    el.style.display='none';
+  }
+}
+function copyCode(){
+  navigator.clipboard.writeText(buildConfigString()).then(()=>toast('✓ Copied to clipboard'));
+}
+
+/* ── TOAST ── */
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+/* ── AUTO-LOGIN IF SESSION ACTIVE ── */
+if(sessionStorage.getItem(SESSION_KEY)==='1'){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('app').classList.add('visible');
+  init();
+} else {
+  document.getElementById('pwInput').focus();
+}
+document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword()});
+</script>
+</body>
+</html>
