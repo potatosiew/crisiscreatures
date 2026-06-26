@@ -719,7 +719,7 @@ function showReceipt(snapCart,snapSubtotal,snapGrand,snapDetails,snapCoupons){
   const grandEl=totalsEl.querySelector('.receipt-total-row.grand');
   totalsEl.querySelectorAll('.receipt-coupon-row').forEach(el=>el.remove());
   (snapCoupons||[]).forEach(c=>{
-    const disc=discountForCoupon(c);
+    const disc=c._disc!==undefined?c._disc:discountForCoupon(c);
     const row=document.createElement('div');
     row.className='receipt-total-row receipt-coupon-row';
     row.style.color='#2E7D32';
@@ -761,6 +761,7 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
   const snapCart=[...cart];
   const snapSubtotal=cartSubtotal();
   const snapGrand=cartGrand();
+  const snapCoupons=appliedCoupons.map(c=>({...c,_disc:discountForCoupon(c)}));
   const snapDetails={
     cat_names:document.getElementById('cat_names').value.trim(),
     recipient_name:document.getElementById('recipient_name').value.trim(),
@@ -776,7 +777,7 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
     const r=await fetch(this.action,{method:'POST',body:new FormData(this),headers:{'Accept':'application/json'}});
     if(r.ok){
       this.reset();cart=[];saveCart();clearFormSession();
-      showReceipt(snapCart,snapSubtotal,snapGrand,snapDetails,[...appliedCoupons]);
+      showReceipt(snapCart,snapSubtotal,snapGrand,snapDetails,snapCoupons);
     }else throw new Error();
   }catch{
     btn.textContent='Submit My Order';btn.disabled=false;
