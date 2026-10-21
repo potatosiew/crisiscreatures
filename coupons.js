@@ -5,10 +5,10 @@
 
 var COUPON_CONFIG = {
   version: 1,
-  updated: "2026-06-26",
+  updated: "2026-10-21",
   coupons: {
-      "SCF2026": {
-          "active": true,
+      "ACE2026": {
+          "active": false,
           "type": "free_shipping",
           "label": "Free Shipping",
           "description": "Free shipping on your order"
@@ -19,6 +19,12 @@ var COUPON_CONFIG = {
           "value": 10,
           "label": "10% Off",
           "description": "10% off your order"
+      },
+      "SCF2026": {
+          "active": true,
+          "type": "free_shipping",
+          "label": "Free Shipping",
+          "description": "Free shipping on your order"
       }
   }
 };
