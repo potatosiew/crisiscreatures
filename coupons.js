@@ -7,7 +7,7 @@ var COUPON_CONFIG = {
   version: 1,
   updated: "2026-06-26",
   coupons: {
-      "ACE2026": {
+      "SCF2026": {
           "active": true,
           "type": "free_shipping",
           "label": "Free Shipping",
